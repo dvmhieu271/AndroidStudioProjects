@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Quadratic Equation Solver</string>
+    <string name="button_main_runQuad">Quad Solver</string>
+    <string name="quadratic_header">Quad Solver, enter a, b, and c</string>
+    <string name="edit_quad_a">Enter A</string>
+    <string name="edit_quad_b">Enter B</string>
+    <string name="edit_quad_c">Enter C</string>
+    <string name="button_quad_calculate">Calculate</string>
+    <string name="button_quad_reset">Reset</string>
+    <string name="button_back">Back to Main Screen</string>
+</resources>
