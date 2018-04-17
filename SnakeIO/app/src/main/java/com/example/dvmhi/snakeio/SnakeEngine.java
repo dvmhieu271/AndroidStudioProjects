@@ -2,6 +2,8 @@ package com.example.dvmhi.snakeio;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -83,11 +85,14 @@ public class SnakeEngine extends SurfaceView implements Runnable {
     private static final String SOUTH = "D";
     private static final String EAST = "R";
     private static final String WEST = "L";
+
+    Bitmap bgBitmap;
     public SnakeEngine(Context context, Point size) {
         super(context);
 
         context = context;
 
+        bgBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.background);
         screenX = size.x;
         screenY = size.y;
 
@@ -126,6 +131,44 @@ public class SnakeEngine extends SurfaceView implements Runnable {
 
         // Start the game
         newGame();
+        this.setOnTouchListener(new OnSwipeTouchListener(context) {
+            @Override
+
+            public void onSwipeDown() {
+                if (heading == SnakeEngine.Heading.UP) {
+                    heading = SnakeEngine.Heading.UP;
+                } else {
+                    heading = SnakeEngine.Heading.DOWN;
+                }
+            }
+
+            @Override
+            public void onSwipeLeft() {
+                if (heading == SnakeEngine.Heading.RIGHT) {
+                    heading = SnakeEngine.Heading.RIGHT;
+                } else {
+                    heading = SnakeEngine.Heading.LEFT;
+                }
+            }
+
+            @Override
+            public void onSwipeUp() {
+                if (heading == SnakeEngine.Heading.DOWN) {
+                    heading = SnakeEngine.Heading.DOWN;
+                } else {
+                    heading = SnakeEngine.Heading.UP;
+                }
+            }
+
+            @Override
+            public void onSwipeRight() {
+                if (heading == SnakeEngine.Heading.LEFT) {
+                    heading = SnakeEngine.Heading.LEFT;
+                } else {
+                    heading = SnakeEngine.Heading.RIGHT;
+                }
+            }
+        });
     }
 
     @Override
@@ -256,6 +299,7 @@ public class SnakeEngine extends SurfaceView implements Runnable {
             soundPool.play(snake_crash, 1, 1, 0, 0, 1);
 
             newGame();
+
         }
     }
 
@@ -263,9 +307,9 @@ public class SnakeEngine extends SurfaceView implements Runnable {
         // Get a lock on the canvas
         if (surfaceHolder.getSurface().isValid()) {
             canvas = surfaceHolder.lockCanvas();
-
-            // Fill the screen with Game Code School blue
-            canvas.drawColor(Color.argb(255, 26, 128, 182));
+            if(bgBitmap!=null) {
+                canvas.drawBitmap(bgBitmap, 0, 0, null);
+            }
 
             // Set the color of the paint to draw the snake white
             paint.setColor(Color.argb(255, 255, 255, 255));
@@ -289,13 +333,15 @@ public class SnakeEngine extends SurfaceView implements Runnable {
             // Draw Bob
             canvas.drawRect(bobX * blockSize,
                     (bobY * blockSize),
-                    (bobX * blockSize) + blockSize,
+                    (bobX * blockSize) + blockSize ,
                     (bobY * blockSize) + blockSize,
                     paint);
 
             // Unlock the canvas and reveal the graphics for this frame
             surfaceHolder.unlockCanvasAndPost(canvas);
         }
+
+
     }
 
     public boolean updateRequired() {
@@ -314,44 +360,5 @@ public class SnakeEngine extends SurfaceView implements Runnable {
 
         return false;
     }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent motionEvent) {
-        String mDirection = this.getCurrentDirection();
-        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_UP:
-                if (if (SOUTH.equals(mDirection))) { {
-                    switch(heading){
-                        case UP:
-                            heading = Heading.RIGHT;
-                            break;
-                        case RIGHT:
-                            heading = Heading.DOWN;
-                            break;
-                        case DOWN:
-                            heading = Heading.LEFT;
-                            break;
-                        case LEFT:
-                            heading = Heading.UP;
-                            break;
-                    }
-                } else {
-                    switch(heading){
-                        case UP:
-                            heading = Heading.LEFT;
-                            break;
-                        case LEFT:
-                            heading = Heading.DOWN;
-                            break;
-                        case DOWN:
-                            heading = Heading.RIGHT;
-                            break;
-                        case RIGHT:
-                            heading = Heading.UP;
-                            break;
-                    }
-                }
-        }
-        return true;
-    }
+   //Chinh's code
 }
