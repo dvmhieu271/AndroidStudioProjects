@@ -5,6 +5,7 @@ import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.view.MotionEvent;
@@ -50,13 +51,13 @@ public class SnakeEngine extends SurfaceView implements Runnable {
     private int blockSize;
 
     // The size in segments of the playable area
-    private final int NUM_BLOCKS_WIDE = 40;
+    private final int NUM_BLOCKS_WIDE = 25;
     private int numBlocksHigh;
 
     // Control pausing between updates
     private long nextFrameTime;
     // Update the game 10 times per second
-    private final long FPS = 10;
+    private final long FPS = 12;
     // There are 1000 milliseconds in a second
     private final long MILLIS_PER_SECOND = 1000;
     // We will draw the frame much more often
@@ -86,13 +87,12 @@ public class SnakeEngine extends SurfaceView implements Runnable {
     private static final String EAST = "R";
     private static final String WEST = "L";
 
-    Bitmap bgBitmap;
+    Bitmap bgBitmap, headBitmap, bodyBitmap;
     public SnakeEngine(Context context, Point size) {
         super(context);
 
         context = context;
 
-        bgBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.background);
         screenX = size.x;
         screenY = size.y;
 
@@ -100,6 +100,14 @@ public class SnakeEngine extends SurfaceView implements Runnable {
         blockSize = screenX / NUM_BLOCKS_WIDE;
         // How many blocks of the same size will fit into the height
         numBlocksHigh = screenY / blockSize;
+
+        bgBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.background);
+
+        headBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.snakehead);
+        headBitmap = Bitmap.createScaledBitmap(headBitmap, blockSize, blockSize, false);
+
+        bodyBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.snakebody);
+        bodyBitmap = Bitmap.createScaledBitmap(bodyBitmap, blockSize, blockSize, false);
 
         // Set the sound up
         soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
@@ -202,7 +210,7 @@ public class SnakeEngine extends SurfaceView implements Runnable {
 
     public void newGame() {
         // Start with a single snake segment
-        snakeLength = 1;
+        snakeLength = 3;
         snakeXs[0] = NUM_BLOCKS_WIDE / 2;
         snakeYs[0] = numBlocksHigh / 2;
 
@@ -298,6 +306,7 @@ public class SnakeEngine extends SurfaceView implements Runnable {
             //start again
             soundPool.play(snake_crash, 1, 1, 0, 0, 1);
 
+//            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.MULTIPLY);
             newGame();
 
         }
@@ -307,12 +316,16 @@ public class SnakeEngine extends SurfaceView implements Runnable {
         // Get a lock on the canvas
         if (surfaceHolder.getSurface().isValid()) {
             canvas = surfaceHolder.lockCanvas();
+            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
             if(bgBitmap!=null) {
                 canvas.drawBitmap(bgBitmap, 0, 0, null);
             }
 
+
             // Set the color of the paint to draw the snake white
             paint.setColor(Color.argb(255, 255, 255, 255));
+
+            // canvas.drawBitmap(headBitmap, 25, 25, null);
 
             // Scale the HUD text
             paint.setTextSize(90);
@@ -320,11 +333,19 @@ public class SnakeEngine extends SurfaceView implements Runnable {
 
             // Draw the snake one block at a time
             for (int i = 0; i < snakeLength; i++) {
-                canvas.drawRect(snakeXs[i] * blockSize,
-                        (snakeYs[i] * blockSize),
-                        (snakeXs[i] * blockSize) + blockSize,
-                        (snakeYs[i] * blockSize) + blockSize,
-                        paint);
+//                    canvas.drawRect(snakeXs[i] * blockSize,
+//                           (snakeYs[i] * blockSize),
+//                           (snakeXs[i] * blockSize) + blockSize,
+//                            (snakeYs[i] * blockSize) + blockSize,
+//                            paint);
+                    paint.setColor(Color.argb(255, 255, 0, 0));
+                if(i == 0) {
+                    canvas.drawBitmap(headBitmap, snakeXs[i] * blockSize, snakeYs[i] * blockSize, null);
+                }
+
+                else {
+                    canvas.drawBitmap(bodyBitmap, snakeXs[i] * blockSize, snakeYs[i] * blockSize, null);
+                }
             }
 
             // Set the color of the paint to draw Bob red
