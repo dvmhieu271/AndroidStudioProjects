@@ -8,7 +8,6 @@ import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.media.AudioManager;
 import android.media.SoundPool;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import java.io.IOException;
