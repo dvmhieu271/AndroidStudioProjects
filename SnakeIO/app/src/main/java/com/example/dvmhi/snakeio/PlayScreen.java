@@ -13,7 +13,7 @@ import com.example.dvmhi.snakeio.model.Items;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends Activity {
+public class PlayScreen extends Activity {
     // Declare an instance of SnakeEngine
     SnakeEngine snakeEngine;
     private List<Items> itemsList = new ArrayList<Items>();

@@ -56,7 +56,7 @@ public class SnakeEngine extends SurfaceView implements Runnable {
     // Control pausing between updates
     private long nextFrameTime;
     // Update the game 10 times per second
-    private final long FPS = 12;
+    private int FPS = 10;
     // There are 1000 milliseconds in a second
     private final long MILLIS_PER_SECOND = 1000;
     // We will draw the frame much more often
@@ -218,6 +218,7 @@ public class SnakeEngine extends SurfaceView implements Runnable {
 
         // Reset the score
         score = 0;
+        FPS = 0;
 
         // Setup nextFrameTime so an update is triggered
         nextFrameTime = System.currentTimeMillis();
@@ -238,6 +239,7 @@ public class SnakeEngine extends SurfaceView implements Runnable {
         spawnBob();
         //add to the score
         score = score + 1;
+        FPS = FPS + 2;
         soundPool.play(eat_bob, 1, 1, 0, 0, 1);
     }
 
@@ -380,5 +382,4 @@ public class SnakeEngine extends SurfaceView implements Runnable {
 
         return false;
     }
-   //Chinh's code
 }
